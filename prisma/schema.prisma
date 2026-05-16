@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nombre       String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(100)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  creado_in    DateTime @default(now()) @map("creado_en")
+
+  tarjetas Tarjeta[]
+  pagos    Pago[]
+
+  @@map("usuarios")
+}
+
+model Tarjeta {
+  id               Int      @id @default(autoincrement())
+  usuario_fk       Int      @map("usuario_fk")
+  nombre           String   @map("nombre_targeta") @db.VarChar(100)
+  numero           String   @map("numero") @db.VarChar(100)
+  f_fin            String   @map("fecha_expiracion") @db.VarChar(5)
+  creado_in        DateTime @default(now()) @map("creado_en")
+
+  usuario Usuario @relation(fields: [usuario_fk], references: [id], onDelete: Cascade)
+  pagos   Pago[]
+
+  @@map("tarjetas")
+}
+
+model Pago {
+  id          Int      @id @default(autoincrement())
+  usuario_fk  Int      @map("usuario_fk")
+  tarjeta_fk  Int?     @map("tarjeta_fk")
+  monto       Decimal  @db.Decimal(10, 2)
+  descripcion String?  @db.Text
+  f_pago      DateTime @default(now()) @map("fecha_pago")
+
+  usuario Usuario @relation(fields: [usuario_fk], references: [id], onDelete: Cascade)
+  tarjeta Tarjeta? @relation(fields: [tarjeta_fk], references: [id], onDelete: SetNull)
+
+  @@map("pagos")
+}

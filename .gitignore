@@ -1,0 +1,27 @@
+# Node
+node_modules/
+dist/
+.env
+*.log
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# Python
+__pycache__/
+*.pyc
+venv/
+payment_service/venv/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Otros
+*.sqlite
+.idea/
+*.swp
